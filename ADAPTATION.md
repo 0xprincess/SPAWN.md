@@ -86,7 +86,7 @@ version of training on the test set.
 6. Write the first real `GOAL.md` for the bootstrap mission, with a real
    Definition of Done ("repo builds, verification set green, first N
    proposals accepted" is a fine first mission).
-7. Commit: `Instantiate agentic workflow (from agentic-workflow-template)`.
+7. Commit: `Instantiate agentic workflow (from SPAWN.md)`.
 
 ## 3. Right-sizing (read this twice)
 
