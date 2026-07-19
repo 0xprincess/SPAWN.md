@@ -1,0 +1,13 @@
+{
+  "description": "Machine-readable map from proposal design decisions to the code and tests that satisfy them. Checked by the project's conformance checker. Statuses: conformant (code+tests match the spec), partial (known gaps listed), unimplemented (accepted design, no code yet), n-a (process/meta proposal with no code surface). Rules: conformant requires tests; partial requires gaps; update in the same commit as the code that changes conformance.",
+  "entries": [
+    {
+      "proposal": "0000",
+      "title": "Proposal Template",
+      "status": "n-a",
+      "modules": [],
+      "tests": [],
+      "gaps": []
+    }
+  ]
+}
