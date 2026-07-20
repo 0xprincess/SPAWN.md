@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPAWN.md — a workflow template for agentically developed software</title>
+<meta name="description" content="SPAWN.md is a zero-dependency starting point for projects where autonomous agents write most of the code and a human operator steers through bounded grants.">
+<script>
+// Set theme before paint to avoid a flash.
+(function () {
+  var t = null;
+  try { t = localStorage.getItem('spawn-theme'); } catch (e) {}
+  if (!t) t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a class="brand" href="#top"><span class="brand-mark">*</span>SPAWN.md</a>
+    <nav class="site-nav" aria-label="Sections">
+      <a href="#questions">Four questions</a>
+      <a href="#lifecycle">Decisions</a>
+      <a href="#sessions">Sessions</a>
+      <a href="#playbook">Playbook</a>
+      <a href="#adapt">Adaptation</a>
+      <a href="#start">Start</a>
+    </nav>
+    <div class="head-actions">
+      <button id="theme-toggle" class="btn btn-ghost" type="button" aria-label="Toggle color theme">Dark</button>
+      <a class="btn btn-outline" href="https://github.com/0xprincess/SPAWN.md">GitHub</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">A zero-dependency starting point for agentically developed software</p>
+      <h1>Agents write the code.<br>This is how you steer.</h1>
+      <p class="lede">
+        SPAWN.md is a workflow template for projects where autonomous agents write
+        most of the code and a human operator steers through bounded grants rather
+        than step-by-step supervision. It is entirely Markdown files and a single
+        JSON seed — no runtime, no framework, nothing to install.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="https://github.com/0xprincess/SPAWN.md">Use the template</a>
+        <a class="btn btn-outline" href="#questions">See how it works</a>
+      </div>
+      <p class="hero-note">
+        Extracted from a multi-month, benchmark-driven agentic project and generalized.
+        Every rule traces to a failure mode that occurred in practice — several of them
+        repeatedly, and at real cost.
+      </p>
+    </div>
+    <div class="hero-card" aria-label="Repository contents">
+      <div class="card-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="card-title">the whole template</span></div>
+<pre class="tree">WORKFLOW.md            the durable rules — copied verbatim
+ADAPTATION.md          binding derivation guide
+OVERVIEW.template.md   durable project vision
+GOAL.template.md       per-mission charter for a fresh session
+arch/
+  proposals/           numbered design decisions
+  conformance.json     machine-readable conformance map
+experiments/           contact-with-reality records
+  HANDOFF.template.md  briefing for the next session
+governance/
+  CHARTER.template.md  operator charter
+  SELF-CORRECTION.md   failure playbook — copied verbatim
+docs/                  runbook and operator docs</pre>
+      <p class="card-foot">Markdown + one JSON seed. Instantiate it, commit it, then write product code.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOUR QUESTIONS ============ -->
+<section id="questions" class="section">
+  <div class="wrap">
+    <p class="eyebrow">Why it exists</p>
+    <h2>Four questions nobody wrote down</h2>
+    <p class="section-lede">
+      Agentically built projects tend to fail on four questions. SPAWN.md gives each
+      one a track with explicit rules, templates, and verification hooks. Pick a question.
+    </p>
+
+    <div class="q-tabs" role="tablist" aria-label="The four questions">
+      <button class="q-tab" role="tab" id="qtab-1" aria-controls="qpanel-1" aria-selected="true">
+        <span class="q-num">1</span><span class="q-text">What was decided — and does the code actually conform?</span>
+      </button>
+      <button class="q-tab" role="tab" id="qtab-2" aria-controls="qpanel-2" aria-selected="false">
+        <span class="q-num">2</span><span class="q-text">What was tried, what did it cost, why did it win or lose?</span>
+      </button>
+      <button class="q-tab" role="tab" id="qtab-3" aria-controls="qpanel-3" aria-selected="false">
+        <span class="q-num">3</span><span class="q-text">What may the agent do without asking — and when must it stop?</span>
+      </button>
+      <button class="q-tab" role="tab" id="qtab-4" aria-controls="qpanel-4" aria-selected="false">
+        <span class="q-num">4</span><span class="q-text">How does a fresh session pick up the work without inheriting myths?</span>
+      </button>
+    </div>
+
+    <div class="q-panels">
+      <article class="q-panel" role="tabpanel" id="qpanel-1" aria-labelledby="qtab-1">
+        <h3>Architecture track <code>arch/</code></h3>
+        <p>
+          Design decisions are recorded as numbered improvement proposals with an EIP-style
+          lifecycle and relationship headers (<code>Supersedes</code>, <code>Requires</code>,
+          <code>Extended-By</code>). Final proposals are immutable; changes happen by
+          supersession or by dated, explicitly bounded amendments. Decision history is
+          append-only by construction.
+        </p>
+        <p>
+          Implementation state is kept out of the proposals. A separate machine-readable
+          conformance map (<code>arch/conformance.json</code>) records per proposal whether the
+          code conforms, which modules and tests satisfy it, and what gaps remain.
+          Conformant entries require tests; partial entries require listed gaps; the map is
+          updated in the same commit as the code it describes.
+        </p>
+        <p class="panel-link"><a href="#lifecycle">See the decision lifecycle ↓</a></p>
+      </article>
+
+      <article class="q-panel" role="tabpanel" id="qpanel-2" aria-labelledby="qtab-2" hidden>
+        <h3>Experiment track <code>experiments/</code></h3>
+        <p>
+          Every contact with reality — paid runs, benchmarks, canaries, user tests — gets a
+          numbered record declared <em>before</em> any spend: hypothesis with an explicit
+          production mechanism, frozen scope, alternatives, risks, falsifiable acceptance
+          criteria, and budget. Every record ends with a mandatory terminal closure: outcome,
+          root cause, actual cost, next action.
+        </p>
+        <p>
+          Hard-won defaults: a complete zero-cost rehearsal before real dispatch (including the
+          final publication and settlement steps), single-unit failures settle their unit rather
+          than killing the campaign, terminally closed experiments are never resumed, and
+          negative results are retained with the same care as wins.
+        </p>
+      </article>
+
+      <article class="q-panel" role="tabpanel" id="qpanel-3" aria-labelledby="qtab-3" hidden>
+        <h3>Governance track <code>governance/</code></h3>
+        <p>
+          Operator control is expressed as a charter: a falsifiable definition of done, autonomy
+          grants (spend caps, decision scope), hard invariants whose violation voids the charter,
+          direction constraints that encode already-diagnosed failure vectors, escalation
+          triggers, and a reporting cadence in which prolonged silence is itself an anomaly.
+          Inside the grants the agent does not ask permission; outside them it stops.
+        </p>
+        <p>
+          The track includes <code>SELF-CORRECTION.md</code>, a distilled failure playbook copied
+          verbatim into every instantiated project.
+        </p>
+        <p class="panel-link"><a href="#playbook">Read the playbook ↓</a></p>
+      </article>
+
+      <article class="q-panel" role="tabpanel" id="qpanel-4" aria-labelledby="qtab-4" hidden>
+        <h3>Session lifecycle <code>GOAL.md</code> + <code>experiments/HANDOFF.md</code></h3>
+        <p>
+          Missions are handed to fresh agent sessions through two documents with distinct
+          authority: <code>GOAL.md</code> is normative (ordered deliverables, binding rules,
+          budget, an explicit stop boundary) and <code>HANDOFF.md</code> is descriptive
+          (verified current state, working conventions, known quirks, and a growing list of
+          paid-for lessons). Sessions verify claimed state before relying on it, and rewrite
+          the handoff for their successor when a mission completes.
+        </p>
+        <p class="panel-link"><a href="#sessions">Walk a session ↓</a></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DECISION LIFECYCLE ============ -->
+<section id="lifecycle" class="section section-alt">
+  <div class="wrap">
+    <p class="eyebrow">The architecture track</p>
+    <h2>A decision's life</h2>
+    <p class="section-lede">
+      Proposals are pure design documents — they record what was decided and why, never whether
+      the code currently conforms. Step through the lifecycle.
+    </p>
+
+    <div class="stepper" role="tablist" aria-label="Proposal lifecycle">
+      <button class="step" role="tab" id="step-draft" aria-selected="true"><span class="step-dot"></span>Draft</button>
+      <button class="step" role="tab" id="step-review" aria-selected="false"><span class="step-dot"></span>Review</button>
+      <button class="step" role="tab" id="step-accepted" aria-selected="false"><span class="step-dot"></span>Accepted</button>
+      <button class="step" role="tab" id="step-final" aria-selected="false"><span class="step-dot"></span>Final</button>
+      <button class="step step-exit" role="tab" id="step-superseded" aria-selected="false"><span class="step-dot"></span>Superseded</button>
+      <button class="step step-exit" role="tab" id="step-withdrawn" aria-selected="false"><span class="step-dot"></span>Withdrawn</button>
+    </div>
+
+    <div class="step-detail" id="step-detail" aria-live="polite">
+      <h3 id="step-title">Draft</h3>
+      <p id="step-body">Under active design. The proposal's Specification section uses MUST/SHOULD/MAY language and must be checkable — a proposal that cannot be tested cannot be tracked.</p>
+    </div>
+
+    <div class="conf-card">
+      <h3><code>arch/conformance.json</code> — implementation state, kept separate</h3>
+      <ul class="conf-list">
+        <li><span class="pill pill-ok">conformant</span> code and tests match the spec — requires listed tests</li>
+        <li><span class="pill pill-part">partial</span> known gaps — requires listed gaps</li>
+        <li><span class="pill pill-todo">unimplemented</span> accepted design, no code yet</li>
+        <li><span class="pill pill-na">n-a</span> process/meta proposal with no code surface</li>
+      </ul>
+      <p>Updated in the <strong>same commit</strong> as the code that changes conformance. A checker script
+      validates the map — no dangling file references, no missing entries — and runs in the standard
+      verification set.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SESSION LIFECYCLE ============ -->
+<section id="sessions" class="section">
+  <div class="wrap">
+    <p class="eyebrow">The session lifecycle</p>
+    <h2>Every session starts cold — by design</h2>
+    <p class="section-lede">
+      Fresh sessions are a feature, not a bug: the workflow makes a cold start safe.
+      The mission file is what a session actually keeps in working memory.
+    </p>
+
+    <div class="phase-tabs" role="tablist" aria-label="Session phases">
+      <button class="phase-tab" role="tab" id="ptab-start" aria-controls="ppanel-start" aria-selected="true">Startup</button>
+      <button class="phase-tab" role="tab" id="ptab-work" aria-controls="ppanel-work" aria-selected="false">While working</button>
+      <button class="phase-tab" role="tab" id="ptab-end" aria-controls="ppanel-end" aria-selected="false">Session end</button>
+    </div>
+
+    <div class="phase-panels">
+      <div class="phase-panel" role="tabpanel" id="ppanel-start" aria-labelledby="ptab-start">
+        <ol class="rule-list">
+          <li>Read <code>GOAL.md</code>, then <code>experiments/HANDOFF.md</code>, then the charter.</li>
+          <li>Verify the claimed current state — run the verification commands, check conformance. The handoff says “verify before relying” and means it.</li>
+          <li>Read the specific proposals the mission names, in full, before designing.</li>
+        </ol>
+      </div>
+      <div class="phase-panel" role="tabpanel" id="ppanel-work" aria-labelledby="ptab-work" hidden>
+        <ol class="rule-list">
+          <li>Architecture-track decision → proposal first, accepted, then code. This is what lets parallel worker sessions build against a stable contract.</li>
+          <li>Semantic commits, bounded size — reviewable in one sitting, roughly ≤ 800 changed lines.</li>
+          <li>Independent review before irreversible or paid steps, where available.</li>
+          <li>Full verification gates green before any real-world dispatch.</li>
+          <li>Report at every deliverable completion and every terminal closure — compact: outcome, root cause, totals, next action. Prolonged silence is itself a report-worthy anomaly.</li>
+        </ol>
+      </div>
+      <div class="phase-panel" role="tabpanel" id="ppanel-end" aria-labelledby="ptab-end" hidden>
+        <ol class="rule-list">
+          <li>Update conformance, close experiment records, regenerate derived docs via their generators — never hand-edit generated files.</li>
+          <li>Rewrite <code>experiments/HANDOFF.md</code> for the successor.</li>
+          <li>Update <code>GOAL.md</code> or mark it complete; <strong>STOP</strong> at the mission boundary even if momentum suggests continuing — follow-on work is a new mission.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PLAYBOOK ============ -->
+<section id="playbook" class="section section-alt">
+  <div class="wrap">
+    <p class="eyebrow">governance/SELF-CORRECTION.md — copied verbatim into every project</p>
+    <h2>The self-correction playbook</h2>
+    <p class="section-lede">
+      Ten distilled failure lessons from a real agentic project's history — most cost actual
+      money or weeks. Read them when an experiment dies terminally, a failure repeats under a
+      different guise, or the deliverable has not moved while the repo has.
+    </p>
+
+    <div class="accordion" id="playbook-list">
+      <details class="rule" open>
+        <summary><span class="rule-num">1</span>When a failure repeats with a new mask, question the assumption</summary>
+        <div class="rule-body">After TWO terminal failures that rhyme, you are not allowed a third attempt at the mask level. Write down the assumption both attempts shared, construct the cheapest test that could falsify it, and run that instead. One philosophy error was “fixed” four times under different masks — killing four consecutive campaigns.</div>
+      </details>
+      <details class="rule">
+        <summary><span class="rule-num">2</span>Ceremony is not the deliverable</summary>
+        <div class="rule-body">Agents under uncertainty drift toward building process — more validation, more lifecycle states, more tests of tests. Before adding machinery, name the recorded blocker that requires it. No blocker on record, no machinery.</div>
+      </details>
+      <details class="rule">
+        <summary><span class="rule-num">3</span>Don't gate stochastic processes on exact content</summary>
+        <div class="rule-body">Any check of the form “the model output must equal exactly X” is a time bomb. Validate rates, structure, bands, and machine-checkable outcomes — exit codes, passing tests, schema validity.</div>
+      </details>
+      <details class="rule">
+        <summary><span class="rule-num">4</span>Per-unit failure is data, not death</summary>
+        <div class="rule-body">A failed unit settles its own unit and gets its cause recorded; the campaign continues. Campaigns terminate on budget, a pre-declared failure-rate threshold (default &gt;25%), or a hard-invariant hit — never on a single unlucky unit. No silent retries, no complete-case subset selection.</div>
+      </details>
+      <details class="rule">
+        <summary><span class="rule-num">5</span>Rehearse the LAST steps, not just the core</summary>
+        <div class="rule-body">Multiple campaigns executed their expensive core perfectly and then died in unrehearsed publication or settlement stages, wasting the spend. A zero-cost end-to-end rehearsal of the complete path is mandatory before real dispatch.</div>
+      </details>
+      <details class="rule">
+        <summary><span class="rule-num">6</span>Attribute wins to declared mechanisms only</summary>
+        <div class="rule-body">If the treatment won but not through the mechanism you pre-declared, you have an observation, not a result. Never re-narrate a lucky path as the designed win — the record's future readers can't tell the difference, which is exactly the problem.</div>
+      </details>
+      <details class="rule">
+        <summary><span class="rule-num">7</span>Claims and evidence are different substances</summary>
+        <div class="rule-body">Anything the system says about itself is a claim. Evidence is a runner-executed gate, an externally reported actual, or a regenerable artifact. Label the two differently everywhere; never let a claim flow into a headline number.</div>
+      </details>
+      <details class="rule">
+        <summary><span class="rule-num">8</span>Losses are deliverables</summary>
+        <div class="rule-body">An honestly measured loss defines the prize for the next cycle. Deleting negative results, resuming terminally closed experiments, or iterating past the mission boundary to turn a loss into a win are all the same corruption.</div>
+      </details>
+      <details class="rule">
+        <summary><span class="rule-num">9</span>Freeze what you compare against</summary>
+        <div class="rule-body">Comparisons are only meaningful when scope is frozen. Discovering mid-flight that something varied silently doesn't downgrade the result — it terminates it. Diffs between successive plans beat re-freezing from scratch.</div>
+      </details>
+      <details class="rule">
+        <summary><span class="rule-num">10</span>The handoff is part of the work</summary>
+        <div class="rule-body">A mission is not done when the code works; it is done when a fresh session can verify the state and continue without inheriting myths. Assume your successor knows nothing and trusts nothing — because the good ones don't.</div>
+      </details>
+    </div>
+    <div class="accordion-actions">
+      <button class="btn btn-ghost" id="expand-all" type="button">Expand all</button>
+      <button class="btn btn-ghost" id="collapse-all" type="button">Collapse all</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ADAPTATION ============ -->
+<section id="adapt" class="section">
+  <div class="wrap">
+    <p class="eyebrow">Adaptation instead of variants</p>
+    <h2>Seven bindings, derived — not chosen from a menu</h2>
+    <p class="section-lede">
+      There are no per-project-type editions. <code>ADAPTATION.md</code> defines seven bindings an
+      instantiating agent derives from the project's own description, and records in the
+      instantiated <code>OVERVIEW.md</code>.
+    </p>
+
+    <div class="bind-grid">
+      <div class="bind"><span class="bind-id">B1</span><h3>Proposal identity</h3><p>A short prefix from the project name, zero-padded 4-digit numbering. Proposal 0000 is always the template itself.</p></div>
+      <div class="bind"><span class="bind-id">B2</span><h3>Architecture-track threshold</h3><p>“Would two parallel sessions build incompatible things without this written down?” or “would reversing this cost more than a day?”</p></div>
+      <div class="bind"><span class="bind-id">B3</span><h3>Experiment &amp; spend unit</h3><p>Anything learned from reality rather than the test suite — provider dollars, CI minutes, user sessions, or wall-clock days.</p></div>
+      <div class="bind"><span class="bind-id">B4</span><h3>Verification set</h3><p>Concrete commands from the project's stack: test runner, static checks, conformance checker, build. The set only grows.</p></div>
+      <div class="bind"><span class="bind-id">B5</span><h3>Charter thresholds</h3><p>Total budget, per-experiment cap, consecutive-failure trigger (2 is a good default), failure-rate abort (&gt;25%), reporting cadence.</p></div>
+      <div class="bind"><span class="bind-id">B6</span><h3>Generated artifacts</h3><p>Every generator-owned file is marked “never hand-edit”, with its regeneration command named next to it.</p></div>
+      <div class="bind"><span class="bind-id">B7</span><h3>Holdouts</h3><p>Reserve at least one evaluation surface that day-to-day iteration must not touch. Optimizing against your only validation surface is training on the test set.</p></div>
+      <div class="bind bind-widget">
+        <span class="bind-id">B1</span>
+        <h3>Try the prefix rule</h3>
+        <p>Project <em>Foo</em> → FIP, <em>Bar</em> → BIP. Yours:</p>
+        <div class="prefix-widget">
+          <input id="prefix-input" type="text" maxlength="24" placeholder="project name" aria-label="Project name">
+          <span class="prefix-arrow">→</span>
+          <output id="prefix-output" class="prefix-out">—</output>
+        </div>
+      </div>
+    </div>
+
+    <div class="scale-note">
+      <h3>Right-sizing: collapse documents, never drop the four questions</h3>
+      <p><strong>Tiny project:</strong> charter and GOAL.md can be one file; experiments one file; conformance a table. Keep proposal immutability and terminal closure — they cost nothing and are load-bearing. <strong>Medium:</strong> the full tree as given. <strong>Large:</strong> split handoffs per workstream; charters may nest, but hard invariants only ever tighten downward, never loosen.</p>
+      <p class="anti">The operator will reject: ceremony the project cannot feed · proposals written after the code as documentation theater · deleted failure records to look tidy. The failure history <em>is</em> the value.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GETTING STARTED ============ -->
+<section id="start" class="section section-alt">
+  <div class="wrap">
+    <p class="eyebrow">Getting started</p>
+    <h2>Point an agent at the repo</h2>
+    <p class="section-lede">
+      Give an agent this repository and a project description, and instruct it to instantiate
+      the workflow. It commits the instantiated workflow before any product code.
+    </p>
+
+    <div class="start-grid">
+      <ol class="start-steps">
+        <li><span class="start-num">1</span><div>It reads <code>WORKFLOW.md</code> (the durable rules) and <code>ADAPTATION.md</code> (the derivation guide).</div></li>
+        <li><span class="start-num">2</span><div>It derives the project-specific bindings and records them in the instantiated <code>OVERVIEW.md</code>.</div></li>
+        <li><span class="start-num">3</span><div>It copies the tree, renames <code>*.template.md</code> files to their real names, fills every placeholder, and seeds the conformance map.</div></li>
+        <li><span class="start-num">4</span><div>It commits the instantiated workflow — <code>Instantiate agentic workflow (from SPAWN.md)</code> — before any product code.</div></li>
+      </ol>
+
+      <div class="prompt-card">
+        <h3>Starter prompt <button class="btn btn-ghost btn-copy" id="copy-prompt" type="button">Copy</button></h3>
+        <pre id="prompt-text">Read WORKFLOW.md and ADAPTATION.md in this repository, then instantiate the workflow for my project: &lt;describe your project&gt;. Derive the seven bindings, copy the tree, fill every placeholder, seed arch/conformance.json, and commit the instantiated workflow before writing any product code.</pre>
+        <p class="prompt-note"><code>WORKFLOW.md</code> and <code>governance/SELF-CORRECTION.md</code> are copied verbatim; the <code>*.template.md</code> files carry <code>{{PLACEHOLDER}}</code> markers for the bindings.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap foot-inner">
+    <div>
+      <p class="foot-brand"><span class="brand-mark">*</span>SPAWN.md</p>
+      <p class="foot-line">SPAWN.md governs how agentic work is decided, tried, bounded, and handed over. It does not prescribe languages, frameworks, test runners, or agent harnesses.</p>
+    </div>
+    <div class="foot-links">
+      <a href="https://github.com/0xprincess/SPAWN.md">Repository</a>
+      <a href="https://github.com/0xprincess/SPAWN.md/blob/master/WORKFLOW.md">WORKFLOW.md</a>
+      <a href="https://github.com/0xprincess/SPAWN.md/blob/master/governance/SELF-CORRECTION.md">SELF-CORRECTION.md</a>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
