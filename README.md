@@ -1,5 +1,13 @@
 # SPAWN.md
 
+<p align="center">
+  <a href="https://0xprincess.github.io/SPAWN.md/">
+    <img src="docs/hero.svg" alt="SPAWN.md — agents play, you set the game rules" width="100%">
+  </a>
+</p>
+
+Agents play. You set the game rules.
+
 A zero-dependency starting point for agentically developed software.
 
 SPAWN.md is a workflow template for projects where autonomous agents write
@@ -69,8 +77,8 @@ does not ask permission; outside them it stops.
 
 The track includes `SELF-CORRECTION.md`, a distilled failure playbook copied
 verbatim into every instantiated project. Its rules cover the recurring
-traps of agent-driven development: re-fixing a wrong assumption under new
-masks, building process ceremony instead of the deliverable, gating
+traps of agent-driven development: re-fixing a wrong assumption instead of
+questioning it, building process ceremony instead of the deliverable, gating
 stochastic output on exact content, attributing wins to undeclared
 mechanisms, and conflating agent claims with verifiable evidence.
 
@@ -97,8 +105,15 @@ reject.
 
 ## Getting started
 
-Point an agent at this repository and a project description, and instruct it
-to instantiate the workflow:
+Point an agent at this repository and a project description, with a single
+line:
+
+    Bootstrap my project from SPAWN.md: <describe your project>
+
+The prompt stays short because the procedure lives in the repo, not in the
+prompt. `WORKFLOW.md` opens by telling the instantiating agent exactly what
+to do; `ADAPTATION.md` tells it how to derive the bindings. What the agent
+does, in order:
 
 1. It reads `WORKFLOW.md` (the durable rules) and `ADAPTATION.md` (the
    derivation guide).
