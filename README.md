@@ -1,14 +1,10 @@
-# SPAWN.md
-
 <p align="center">
   <a href="https://0xprincess.github.io/SPAWN.md/">
     <img src="docs/hero.svg" alt="SPAWN.md — agents play, you set the game rules" width="100%">
   </a>
 </p>
 
-Agents play. You set the game rules.
-
-A zero-dependency starting point for agentically developed software.
+# SPAWN.md
 
 SPAWN.md is a workflow template for projects where autonomous agents write
 most of the code and a human operator steers through bounded grants rather
